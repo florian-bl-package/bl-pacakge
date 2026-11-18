@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL significance codes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_signi {IBL}"><tr><td>IBL_signi {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL significance codes</h2>
+
+<h3>Description</h3>
+
+<p>IBL significance codes
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_signi(signi_codes = NA, bar = "ontop", distance = 0.4,
+  font = "ChantillyLH", text_size = 5, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>signi_codes</code></td>
+<td>
+<p>A character vector of length 1 or the number of groups displayed in the barplot. This is the text to be plotted above the bars</p>
+</td></tr>
+<tr valign="top"><td><code>bar</code></td>
+<td>
+<p>&quot;ontop&quot; or &quot;between&quot;. Shall the annotations be drawn on top of the (grouped) bars or between the bars / bar groups?</p>
+</td></tr>
+<tr valign="top"><td><code>distance</code></td>
+<td>
+<p>A numeric vector of length 1 or the number of groups displayed in the barplot. Adjusting for different label types may be useful when different types of text shall be displayed (e.g. 0.9 for &quot;n.s.&quot; and 0.1 for &quot;*&quot;). This is the distance of the text to the bars, or - if present - error bars.</p>
+</td></tr>
+<tr valign="top"><td><code>font</code></td>
+<td>
+<p>A character vector of length 1 or the number of groups displayed in the barplot. Can be any font known to your R. Each label can have their own font (which is not advicably in most cases).</p>
+</td></tr>
+<tr valign="top"><td><code>text_size</code></td>
+<td>
+<p>A numeric vector of length 1 or the number of groups displayed in the barplot. As fot the distance, can be adjusted for different types of text (e.g. 6 for &quot;n.s.&quot; and 8 for &quot;*&quot;).</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## grouped barplot with error
+plot_dat &lt;- IBL_barplot_dat (npk, "yield", "N", "P", error_bar = T)
+
+p &lt;- ggplot (plot_dat, aes (x = group_N, y = yield, fill = subgrp_P)) +
+geom_bar (stat = "identity", position = position_dodge2 (padding = 0.15), color = "black", width = 0.7 ) +
+geom_errorbar (aes (ymin = yield - SE_yield,
+              ymax = yield + SE_yield),
+              width = 0.3,
+              position = position_dodge (0.7)) +
+scale_fill_manual (values = c (IBL_blue (5), IBL_blue (1))) +
+IBL_y_scale (limits = c (0, 70), air = F) +
+labs (x = "N", y = "Yield") +
+IBL_theme (legend.position = "none")
+
+p
+
+p + IBL_signi(c ("n.s.", "*"), text_size = c (6,8), distance = c (0.9, 0.1))
+
+p + IBL_signi ("**", bar = "between")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,34 @@
+# library ####
+library(bl)
+library(randomForestSRC)
+
+# load data ####
+# objects folder
+objects_folder <- "U:/UOS - Arbeit/Projekte/DBU Projekt Südschwarzwald/R/objects/"
+
+# load
+struktur_plots <- readRDS(paste0(objects_folder,"struktur_plots.rds"))
+struktur_plots_rfready <- struktur_plots %>% dplyr::select(-c(Datum, Kommentar, geom))
+
+# fomrula fürf rf model
+names(struktur_plots_rfready)
+mf <- cbind(Offenboden, Moos, Kraeuter, Graeser, Zwergstraeucher, Gehoelze, Grus, Streu) ~ . # Punkt "." = alle übrigen Spalten (die Prädiktoren)
+
+# Modell fitten
+set.seed(123)   # für reproduzierbare Bäume
+rf_multi <- rfsrc(
+  formula = mf,
+  data    = struktur_plots_rfready,
+  ntree   = 1000,          # häufig 500–2000; mehr Bäume = stabiler OOB‑Fehler
+  importance = "permute", # Permutation‑Importance (empfohlen)
+  block.size = 1,           # bei vielen Zeilen ggf. anpassen
+  na.action = "na.impute"
+)
+
+# Ergebnisse ansehen
+print(rf_multi)
+
+get.mv.error(rf_multi)
+plot(get.tree(v.obj, 3))
+rf_multi$err.rate
+summary(rf_multi)

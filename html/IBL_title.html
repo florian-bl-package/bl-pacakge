@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL Title</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_title {IBL}"><tr><td>IBL_title {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL Title</h2>
+
+<h3>Description</h3>
+
+<p>Adds a title to the plot, by default inside the plotting region. This is particularely useful when creating several plots to be aligned within the same panel. Note that the function needs a ggplot2 - plot object as input. The workflow should thus be: i) create the plot and ii) add the titel afterwards.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_title(plot = ggplot2::last_plot(), title = "plot title", x = 0.5,
+  y = 0.97, xrel = T, yrel = T, font = "ChantillyLH",
+  text_size = 5, align_lr = 0, align_tb = 1, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>the plot the title will be added to.</p>
+</td></tr>
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>the title for the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the x-position of the title. If the x-axis is a continuous scale and xrel is set to &quot;TRUE&quot;, this is a relative position (e.g. at 50 percent of the x-axis). Otherwise, this is an absolute position (e.g. at x = .5).</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>the y-position of the title. If the y-axis is a continuous scale and yrel is set to &quot;TRUE&quot;, this is a relative position (e.g. at 90 percent of the y-axis). Otherwise, this is an absolute position (e.g. at y = .9).</p>
+</td></tr>
+<tr valign="top"><td><code>xrel</code></td>
+<td>
+<p>logical. relative or absolute x-position?</p>
+</td></tr>
+<tr valign="top"><td><code>yrel</code></td>
+<td>
+<p>logical. relative or absolute y-position?</p>
+</td></tr>
+<tr valign="top"><td><code>font</code></td>
+<td>
+<p>the font of the title</p>
+</td></tr>
+<tr valign="top"><td><code>text_size</code></td>
+<td>
+<p>the text size of the title</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments, for detail see '?geom_text'.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

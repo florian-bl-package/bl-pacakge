@@ -1,0 +1,512 @@
+dev.off()
+IBL_draw_plot(list (plot_a, plot_b), plot_distance_x = 10)
+Cairo::Cairo (file = "U:/Promotion/test2",
+width = dev.size('px')[1]/96, height = dev.size('px')[2]/96,
+dpi = 96,
+type = "svg")
+replayPlot(mirror)
+mirror <- recordPlot()
+mirror
+Cairo::Cairo (file = "U:/Promotion/test2",
+width = dev.size('px')[1]/96, height = dev.size('px')[2]/96,
+dpi = 96,
+type = "svg")
+replayPlot(mirror)
+dev.off()
+test <- IBL_draw_plot(list (plot_a, plot_b), plot_distance_x = 10)
+test
+Cairo::Cairo (file = "U:/Promotion/test2",
+width = dev.size('px')[1]/96, height = dev.size('px')[2]/96,
+dpi = 96,
+type = "svg")
+replayPlot(test)
+test
+dev.off()
+test
+test
+test <- IBL_draw_plot(list (plot_a, plot_b), plot_distance_x = 10)
+test
+Cairo::Cairo (file = "U:/Promotion/test2",
+width = dev.size('px')[1]/96, height = dev.size('px')[2]/96,
+dpi = 96,
+type = "svg")
+print (test)
+dev.off()
+test <- IBL_draw_plot(list (plot_a, plot_b), plot_distance_x = 10)
+Cairo::Cairo (file = "U:/Promotion/test2",
+width = dev.size('px')[1]/96, height = dev.size('px')[2]/96,
+dpi = 96,
+type = "svg")
+print (test)
+dev.off()
+#preface ####
+library (tidyverse)
+library (sf)         # modern spatial data management
+library (IBL)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat(input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot            %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0)
+fig_1
+IBL_save_svg ("P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+IBL_save_svg ("P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+IBL_save_svg (fig_1"P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+library(Cairo)
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+#preface ####
+library (tidyverse)
+library (sf)         # modern spatial data management
+library (IBL)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat(input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot            %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0)
+fig_1
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+?svg
+#preface ####
+library (tidyverse)
+library (sf)         # modern spatial data management
+library (IBL)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat(input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot            %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0)
+fig_1
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1.svg")
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1")
+svg ("P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1")
+svg ()
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1")
+# GLMM results: species number ####
+plot_width <- single_column    # /25.4 --> convert mm to inches
+plot_ratio <- 1
+plot_rows  <- 3                      # wie viele Plots sollen übereinander dargestellt werden?
+plot_cols  <- 1                      # wie viele Plots sollen nebeneinander dargestellt werden?
+# plot_distance_x <- 10                # abstand der plots voneinander (wenn mehere gleichzeitig übereinander dargestellt werden)
+# plot_distance_y <- 10                # abstand der plots voneinander (wenn mehere gleichzeitig nebeneinander dargestellt werden)
+line_size  <- 0.3                    # Linienstärke der Achsen
+x_lab <- "Landuse Index"
+y_lab <- "Species Number"
+speciesnumber_landuse <- list ()
+for (i in levels (o_plots $ TYPE)) {
+plot_data <- o_plots %>%
+as_tibble() %>%
+filter (TYPE == i)
+plot_no <- data.frame(matrix (ncol = 3))
+plot_no [1,] <- c ("a", "b", "c")
+colnames (plot_no) <- levels (o_plots $ TYPE)
+label <- plot_no [,i]
+if (i == "wetland") {
+plot_data $ LUI <- plot_data$LUI %>% na_if (0)
+plot_data $ LUI [is.na (plot_data $ LUI)] <- runif(22)/4
+}
+speciesnumber_landuse [[i]] <- plot_data %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1,
+aes (size = )) +
+IBL_y_scale(limits = c (0,22)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+speciesnumber_landuse [[i]] <- speciesnumber_landuse [[i]] %>% IBL_title(paste0 (label, ") ", plot_data $TYPE [1]), x = 0, y = 1)
+}
+IBL_draw_plot (speciesnumber_landuse)
+#preface ####
+library (tidyverse)
+library (sf)         # modern spatial data management
+library (IBL)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat(input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot            %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0)
+fig_1
+IBL_save_svg (fig_1, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_1")
+# GLMM results: species number ####
+plot_width <- single_column    # /25.4 --> convert mm to inches
+plot_ratio <- 1
+plot_rows  <- 3                      # wie viele Plots sollen übereinander dargestellt werden?
+plot_cols  <- 1                      # wie viele Plots sollen nebeneinander dargestellt werden?
+# plot_distance_x <- 10                # abstand der plots voneinander (wenn mehere gleichzeitig übereinander dargestellt werden)
+# plot_distance_y <- 10                # abstand der plots voneinander (wenn mehere gleichzeitig nebeneinander dargestellt werden)
+line_size  <- 0.3                    # Linienstärke der Achsen
+x_lab <- "Landuse Index"
+y_lab <- "Species Number"
+speciesnumber_landuse <- list ()
+for (i in levels (o_plots $ TYPE)) {
+plot_data <- o_plots %>%
+as_tibble() %>%
+filter (TYPE == i)
+plot_no <- data.frame(matrix (ncol = 3))
+plot_no [1,] <- c ("a", "b", "c")
+colnames (plot_no) <- levels (o_plots $ TYPE)
+label <- plot_no [,i]
+if (i == "wetland") {
+plot_data $ LUI <- plot_data$LUI %>% na_if (0)
+plot_data $ LUI [is.na (plot_data $ LUI)] <- runif(22)/4
+}
+speciesnumber_landuse [[i]] <- plot_data %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1,
+aes (size = )) +
+IBL_y_scale(limits = c (0,22)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+speciesnumber_landuse [[i]] <- speciesnumber_landuse [[i]] %>% IBL_title(paste0 (label, ") ", plot_data $TYPE [1]), x = 0, y = 1)
+}
+spec_no <- IBL_draw_plot (speciesnumber_landuse)
+spec_no
+IBL_save_svg (spec_no, "P:/fumy_kaempfer_fartmann_orthoptera/figures/figure_2")
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+# packages ####
+library (sf)         # modern spatial data management
+library (lme4)
+library (MuMIn)
+# library (rsquare)
+library (tidyverse)  # tidy umgebung
+library (crayon)     # string colours
+library (r2glmm)
+library (openxlsx)                                    #needed to read and store excel files
+# library (gridExtra)
+# load data ####
+o_plots <- st_read ("o_plots_processed.gpkg")
+# GLMM ####
+multiple_GLMM <- function (global.model = NULL, dredge.max = NULL, AIC_delta = 3, graph.arrange = 2, plot_resids = TRUE) {
+# multiple regression workflow
+#
+# takes a global model of class glmm or glm, performs dredging and model averaging and puts out
+# - the dredge table
+# - the average model
+# - qq plots of all models included in the average model with R² (marginal; delta) and AICc
+modfam <- family (global.model)$family
+dredge_object <- dredge (global.model, m.max = dredge.max)
+if (length (dredge_object$delta [dredge_object$delta < AIC_delta ]) > 1){
+average_model <- model.avg (dredge_object, subset = delta < AIC_delta, fit = TRUE)
+no_best_models <- length (subset (dredge_object, subset = delta < AIC_delta) [,1])
+best_models <- getCall (dredge_object, c (1 : no_best_models))
+summary_average_model <- summary (average_model)
+} else {
+average_model <- getCall (dredge_object, 1)
+no_best_models <- 1
+best_models <- list ("0" = average_model)
+temp_model <- glmer(average_model, family = modfam, data = global.model@frame)
+summary_average_model <- list()
+summary_average_model $ coefmat.full <- summary (temp_model) $ coefficients
+}
+names (best_models) <- paste ("model_", names(best_models), sep = "")
+par (mfrow = c (graph.arrange, ceiling(no_best_models/graph.arrange) ) )
+the_models <- list ()
+the_residuals <- list ()
+for (i in 1 : no_best_models) {
+print (modfam)
+the_models [[i]] <- glmer(best_models[[i]], family = modfam, data = global.model@frame)
+the_residuals [[i]] <- resid (the_models [[i]], type="pearson")
+}
+the_plots <- "no residual qq-plots produced"
+my_r2 <- c()
+for (i in 1 : no_best_models) {
+my_r2 [i] <- round (r.squaredGLMM (the_models [[i]]) [1,1], digits = 3)
+if (plot_resids == TRUE) {
+qqnorm (the_residuals [[i]], main = names (best_models[i]))
+qqline (the_residuals [[i]])
+text (x = -0.5, y = max(the_residuals [[i]])*0.9,
+labels = paste ("R²: ", my_r2 [i] ) )
+text (x = -0.5, y = max(the_residuals [[i]])*0.7,
+labels = paste ("AICc: ", round (dredge_object$AICc [i], digits = 1) ) )
+}
+}
+if (plot_resids == TRUE) the_plots <- recordPlot ()
+return (list (dredge_table = dredge_object [1:15],
+average_model = summary_average_model,
+model_validation_QQplots = the_plots,
+"R2_range" = c (min (my_r2), max (my_r2)),
+"IBL FUNCTIONS"))
+}
+# whole dataset ####
+species_number_global <- glmer (NO_ORTHO ~ LUI + I((LUI)^2) + shannon + #heatload_mean +
+heatload_range + TPI_range #* TPI_mean
++  elevation + (1|GEBIET),
+data = o_plots, family = "poisson", na.action = na.fail)
+summary(species_number_global)
+species_number_regression <- multiple_GLMM (global.model = species_number_global,
+dredge.max = 8,
+AIC_delta = 3,
+graph.arrange = 3)
+species_number_regression
+# specialists
+specialists_number_global <- glmer (NO_ORTHO_specialists ~ LUI + I((LUI)^2) + shannon + heatload_mean + heatload_range + TPI_range * TPI_mean +  elevation + (1|GEBIET),
+data = o_plots, family = "poisson", na.action = na.fail)
+summary(specialists_number_global)
+specialists_number_regression <- multiple_GLMM (global.model =  specialists_number_global,
+dredge.max = 8,
+AIC_delta = 3,
+graph.arrange = 3)
+specialists_number_regression
+# generalists
+generalists_number_global <- glmer (NO_ORTHO_generalists ~ LUI + I((LUI)^2) + shannon + heatload_mean + heatload_range + TPI_range * TPI_mean +  elevation + (1|GEBIET),
+data = o_plots, family = "poisson", na.action = na.fail)
+summary(generalists_number_global)
+generalists_number_regression <- multiple_GLMM (generalists_number_global,
+dredge.max = 8,
+AIC_delta = 3,
+graph.arrange = 2,
+plot_resids = F)
+generalists_number_regression
+# Zielvariable CFI
+o_plots_noNA <- filter (o_plots, !is.na(CFI_best) )
+CFI_global <- glmer (CFI_best ~ LUI + I((LUI)^2) + shannon + #heatload_mean +
+heatload_range + TPI_range #* TPI_mean
++ elevation + (1|GEBIET),
+data = o_plots_noNA, family = "gaussian", na.action = na.fail)
+summary (CFI_global)
+CFI_regression <- multiple_GLMM (CFI_global,
+dredge.max = 7,
+AIC_delta = 2,
+graph.arrange = 2)
+CFI_regression
+##
+##
+##
+multi_reg <- list(
+species_number_regression,
+specialists_number_regression,
+generalists_number_regression,
+CFI_regression
+)
+multi_reg_tables <- list (
+multi_reg_species_number = data.frame (variable = rownames  (species_number_regression$average_model$coefmat.full), species_number_regression$average_model$coefmat.full),
+multi_reg_specialists_number = data.frame (variable = rownames  (specialists_number_regression$average_model$coefmat.full), specialists_number_regression$average_model$coefmat.full),
+multi_reg_generalists_number = data.frame (variable = rownames  (generalists_number_regression$average_model$coefmat.full),generalists_number_regression$average_model$coefmat.full),
+multi_reg_CFI = data.frame (variable = rownames  (CFI_regression$average_model$coefmat.full), CFI_regression$average_model$coefmat.full)
+)
+for (i in 1 : length(multi_reg_tables)) {
+write.xlsx (list (coefficients = multi_reg_tables [[i]], R2_range = multi_reg [[i]]$R2_range), paste0 ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera/results/", names (multi_reg_tables [i]), ".xlsx"), asTable = F)
+}
+# split datasets ####
+split_models <- list()
+# dependent_vars <- c ("NO_ORTHO", "NO_ORTHO_specialists", "NO_ORTHO_generalists", "CFI_best")
+# model_names <- c ("species_number", "specialists", "generalists", "CFI")
+for (i in levels(o_plots$TYPE)){
+my_data <- o_plots %>%
+as_tibble() %>%
+filter (TYPE == i) %>%
+select (-"geom")
+##set missing CFI values conservatively to lowest SFI value in the study (15.825; Tetrix subulata)
+my_data $ CFI_best <- my_data $ CFI_best %>% replace_na (15.825)
+for (j in c ("NO_ORTHO", "NO_ORTHO_specialists", "NO_ORTHO_generalists", "CFI_best")){
+the_data <- filter (my_data, !is.na (my_data [j]) )
+my_fam <- if (j == "CFI_best") {"gaussian"} else {"poisson"}
+my_model <- glmer (the_data [[j]] ~ LUI + shannon + #heatload_mean +
+heatload_range + TPI_range #* TPI_mean
++  elevation + (1|GEBIET),
+data = the_data, family = my_fam, na.action = na.fail)
+summary (my_model)
+the_result <- multiple_GLMM (global.model = my_model,
+dredge.max = 4,
+AIC_delta = 3,
+graph.arrange = 3)
+split_models [[paste0 ("multiple_reg__", i, "__", j)  ]] <- the_result [1:5]
+}
+}
+split_models
+split_models [1]
+multiple_GLMM
+?multiple_GLMM
+split_models [1] [1]
+split_models [[1]]
+split_models [1]
+split_models [1] $`multiple_reg__hay meadow__NO_ORTHO`$average_model
+split_models
+#' @param title the title for the plot
+#' @param x the x-position of the title. If the x-axis is a continuous scale and xrel is set to "TRUE", this is a relative position (e.g. at 50 % of the x-axis). Otherwise, this is an absolute position (e.g. at x = .5).
+#' @param y the y-position of the title. If the y-axis is a continuous scale and yrel is set to "TRUE", this is a relative position (e.g. at 90 % of the y-axis). Otherwise, this is an absolute position (e.g. at y = .9).
+#' @param xrel logical. relative or absolute x-position?
+#' @param yrel logical. relative or absolute y-position?
+#' @param font the font of the title
+#' @param text_size the text size of the title
+#' @param ... additional arguments, for detail see '?geom_text'.
+#'
+#' @export
+IBL_title <- function (plot = ggplot2::last_plot (),
+title = "plot title",
+x = .5,
+y = .97,
+xrel = T,
+yrel = T,
+font = "ChantillyLH",
+text_size = 5,
+...) {
+if (is.null(layer_scales(plot)$y$limits)){
+yrel = F
+}
+if (is.null(layer_scales(plot)$x$limits)) {
+xrel = F
+}
+if (isTRUE (yrel)) {
+y_lims <- layer_scales(plot)$y$limits
+y_pos <- (y_lims [[2]] - y_lims [[1]]) * y
+} else if (!isTRUE (yrel)) {
+y_pos <- y
+}
+if (isTRUE (xrel)) {
+x_lims <- layer_scales(plot)$x$limits
+x_pos <- (x_lims [[2]] - x_lims [[1]]) * x
+} else if (!isTRUE (xrel)) {
+x_pos <- x
+}
+plot +
+annotate (geom = "text", x = x_pos, y = y_pos, label = title, hjust = 0, vjust = 1, family = font, size = text_size, ...)
+}
+library(cairo)
+library(Cairo)
+library(IBL)
+?IBL_title
+library(IBL)
+?IBL_title
+library(IBL)
+?IBL_title
+library(IBL)
+?svg

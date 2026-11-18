@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL scale</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_y_scale {IBL}"><tr><td>IBL_y_scale {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL scale</h2>
+
+<h3>Description</h3>
+
+<p>Creates axis with customizable ticks. Minor ticks are possible.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_x_scale (sides = "b",
+               major_x = 5,
+               minor_x = NA,
+               major_ticklength = 1.5,
+               minor_ticklength = 1,
+               colour = "black",
+               size = NA,
+               limits = NULL,
+               air = NA,
+               ...)
+
+
+IBL_y_scale (sides = "b",
+               major_y = 5,
+               minor_y = NA,
+               major_ticklength = 1.5,
+               minor_ticklength = 1,
+               colour = "black",
+               size = NA,
+               limits = NULL,
+               air = NA,
+               ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sides</code></td>
+<td>
+<p>One or a combination of the letters &quot;b&quot; (bottom), &quot;l&quot; (left), &quot;t&quot; (top), &quot;r&quot; (right)</p>
+</td></tr>
+<tr valign="top"><td><code>major_ticklength</code></td>
+<td>
+<p>the length of the major ticks to be drawn, specified in mm.</p>
+</td></tr>
+<tr valign="top"><td><code>minor_ticklength</code></td>
+<td>
+<p>the length of the minor ticks to be drawn, specified in mm.</p>
+</td></tr>
+<tr valign="top"><td><code>colour</code></td>
+<td>
+<p>the colour of the ticks; color and colour are interchangeable</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>the thickness of the ticks</p>
+</td></tr>
+<tr valign="top"><td><code>linetype</code></td>
+<td>
+<p>set the line type. most of the time, dashed lines won't make sense (but are possible)</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>set the transparency of the ticks (other than 1 seems not to be very useful)</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>set the scale of the axis. &quot;identity&quot; should workl for 99 percent of the cases, but &quot;log&quot; or other scales are also possible.</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>logical. are the axis scaled? as with scale, don't mess with this parameter. in 99 percent of the cases, &quot;TRUE&quot; will do the job.</p>
+</td></tr>
+<tr valign="top"><td><code>air</code></td>
+<td>
+<p>expands the plots over the actual plot limits.</p>
+</td></tr>
+<tr valign="top"><td><code>limits</code></td>
+<td>
+<p>set the limits of the axis</p>
+</td></tr>
+<tr valign="top"><td><code>major_x</code></td>
+<td>
+<p>the number of major ticks on the x axis. can be (i) a single number, based on which the breaks are calculated via scales::extended_breaks or (ii) a vector of points.</p>
+</td></tr>
+<tr valign="top"><td><code>minor_x</code></td>
+<td>
+<p>the number of minor ticks on the x axis. handled in analogy to major_x.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+##        geom_point (color = IBL_green (3)) +
+##        IBL_x_scale () +
+##        IBL_y_scale () +
+##        IBL_theme ()
+#
+#
+#
+## my_dat &lt;- IBL_barplot_dat (npk, "yield", "N", "P", error_bar = T)
+##
+## ggplot (my_dat, aes (x = N, y = yield, fill = P)) +
+## geom_bar (stat = "identity", position = "dodge", color = "black") +
+## scale_fill_manual (values = c (IBL_blue (1), IBL_blue (5))) +
+## IBL_y_scale (limits = c (0, 75), air = F) +
+## theme (legend.position = c (.1, .85)) +
+## IBL_theme ()
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL_draw_plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_draw_plot {IBL}"><tr><td>IBL_draw_plot {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL_draw_plot</h2>
+
+<h3>Description</h3>
+
+<p>A function which can be used to draw plots
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_draw_plot(plot = ggplot2::last_plot(), plot_width = NA,
+  plot_ratio = NA, plot_rows = NA, plot_cols = NA,
+  plot_distance_x = NA, plot_distance_y = NA, add_margins = T,
+  align_plots = T, hight_adjust = NA, width_adjust = NA)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>plot or list of plots to be drawn. Several plots MUST be put in a list.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_width</code></td>
+<td>
+<p>sets the with of each plot in the panel in mm. Is overwritten by &quot;single_column&quot; if existant, else defaults to 90 mm.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_ratio</code></td>
+<td>
+<p>sets the aspect ratio of each plot in the panel. Defaults to 1, but plots with fixed aspect ratio keep their aspect ratio if nothing is provided.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_rows</code></td>
+<td>
+<p>for multiple plotting sets the number of rows of the plot panel.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_cols</code></td>
+<td>
+<p>for multiple plotting sets the number of columns of the plot panel.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_distance_x</code></td>
+<td>
+<p>sets the distance between multiple plots in x direction.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_distance_y</code></td>
+<td>
+<p>sets the distance between multiple plots in y direction.</p>
+</td></tr>
+<tr valign="top"><td><code>add_margins</code></td>
+<td>
+<p>if TRUE, margins are added to the panel width.</p>
+</td></tr>
+<tr valign="top"><td><code>align_plots</code></td>
+<td>
+<p>if speciefied, multiple plots are aligned in the panel. Possible values: TRUE and &quot;hv&quot; align both horizontally and vertically. &quot;h&quot; aligns horizontally. &quot;v&quot; aligns vertically</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

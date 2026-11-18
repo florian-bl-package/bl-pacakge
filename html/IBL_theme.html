@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL Theme</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_theme {IBL}"><tr><td>IBL_theme {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL Theme</h2>
+
+<h3>Description</h3>
+
+<p>A standard IBL Theme for plotting with ggplot2. 'IBL_theme' is a wrapper for 'ggplot2::theme'. It accepts all additional parameters of 'theme'.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_theme(aspect.ratio = NA, panel.background = "blank", lsize = NA,
+  axis.text.color = "black", axis.text.size = 14, text.size = 18,
+  text.font = "ChantillyLH", label.text.color = "black",
+  x.margin = 5, y.margin = 5, axis.title.x = NA, axis.title.y = NA,
+  ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>aspect.ratio</code></td>
+<td>
+<p>The ratio of x and y axis. Is specified via plot_ratio; if plot_ratio is not given defaults to 1.</p>
+</td></tr>
+<tr valign="top"><td><code>panel.background</code></td>
+<td>
+<p>Defaults to a blank background.</p>
+</td></tr>
+<tr valign="top"><td><code>lsize</code></td>
+<td>
+<p>Defines the thickness of axes and major ticks. If given, is specified via line_size; else defaults to 0.3 mm.</p>
+</td></tr>
+<tr valign="top"><td><code>axis.text.color</code></td>
+<td>
+<p>Sets the color of tick annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>axis.text.size</code></td>
+<td>
+<p>Sets the text size of tick annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>text.size</code></td>
+<td>
+<p>Sets the text size of the axis labels.</p>
+</td></tr>
+<tr valign="top"><td><code>text.font</code></td>
+<td>
+<p>Globally sets the fornt for the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>label.text.color</code></td>
+<td>
+<p>Globally Sets the Text Color.</p>
+</td></tr>
+<tr valign="top"><td><code>x.margin</code></td>
+<td>
+<p>sets the vertical margin around the plot. If not given defautls to 5. Interacts with y.margin. Particularly important for plotting several graphs on a page. Is overwritten by plot_distance_x.</p>
+</td></tr>
+<tr valign="top"><td><code>y.margin</code></td>
+<td>
+<p>sets the horizontal margin around the plot. If not given defautls to 5. Interacts with x.margin. Particularly important for plotting several graphs on a page. Is overwritten by plot_distance_y.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>all parameters accepted by 'ggplot2::theme()' can also be used with IBL_theme (). Some logical conflicts produce an error. In these cases, it is adviced to use 'theme()' seperately. For further assistance view '?theme'.</p>
+</td></tr>
+<tr valign="top"><td><code>tick.length</code></td>
+<td>
+<p>Globally defines the length of the major ticks in mm. Defaults to 1.5.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+library (ggplot2)    ## Required for plotting.
+library (extrafont)  ## Required for the standard - IBL - font "ChantillyLH". ChantillyLH must be registered in R.
+
+ggplot (iris, aes (Sepal.Length, Sepal.Width, color = Species)) +
+        geom_point ()+
+        IBL_theme (x.margin = 10)
+
+
+
+########
+## external control of plot ratio and line size
+
+library (ggplot2)
+library (extrafont)
+
+plot_ratio &lt;- 0.3
+line_size &lt;- 2
+
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+       geom_point()+
+       IBL_theme(x.margin = 10)
+
+##
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+       geom_point()+
+       IBL_theme(x.margin = 10, aspect.ratio = 2, lsize = 0.1)   # aspect.ratio and lsize are not overwritten by plot_ratio and line_size
+
+
+plot_distance_x &lt;- 100
+
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+       geom_point()+
+       IBL_theme(x.margin = 10)                                  # x.margin and y.margin are overwritten by plot_distance_x and plot_distance_y
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,512 @@
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_wet
+#add regression line
+estimates <- summary (best_wet) $ coefficients [,1]
+names (estimates) [1] <- "Intercept"
+Intercept <- estimates ["Intercept"]
+est_LUI <- estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+est_rest <- estimates [! names (estimates) %in% remove]
+dat_rest <- wet [names (est_rest)] %>% colMeans ()
+rest <- est_rest * dat_rest
+plot_wet <- plot_wet + geom_line (aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .4)
+plot_wet <- IBL_title (plot_wet, "c) Wetland. **", x = 0, y = 1)
+IBL_draw_plot (plot_wet)
+fig02_I <- IBL_draw_plot(list (plot_hay, plot_past, plot_wet))
+IBL_save_svg (fig02_I, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_I")
+# Plots Alternative II ####
+plot_all <- plot_dat %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO, color = TYPE)) +
+scale_color_manual (values = c (IBL_green(3), IBL_red(1), IBL_blue(3)),
+labels = c("HAY", "PAST", "WET")) +
+geom_point (shape = 19,
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme (legend.title = element_blank(),
+legend.background = element_blank(),
+legend.key = element_blank(),
+legend.position = c(0.8, 0.9))
+plot_all <- plot_all + geom_line (data = wet, aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7) +
+geom_line (data = hay, aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+fig02_II <- IBL_draw_plot (plot_all)
+IBL_save_svg (fig02_II, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_II")
+fig_1
+library (IBL)
+library (sf)         # modern spatial data management
+library (tidyverse)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat (input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (
+list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0
+)
+fig_1
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+?expand_scale
+library(IBL)
+library(IBL)
+# packages ####
+#packages ####
+library (tidyverse)  # tidy umgebung
+library (raster)     # raster data management
+library (sf)         # modern spatial data management
+library (spatialEco) # tpi, hli package
+library (mapview)    # visualization of geodata
+library (openxlsx)   # read and write excel files
+library (rlist)      # save and read lists to and from hard drive
+# library (MASS)
+# read data ####
+# load field data
+Orthoptera <- read.xlsx ("U:/Günztal/Günztal/Auswertung_Daten/Geländedaten/GünztalData_2020.xlsx", sheet = "Orthoptera")
+Lepidoptera <- read.xlsx ("U:/Günztal/Günztal/Auswertung_Daten/Geländedaten/GünztalData_2020.xlsx", sheet = "Lepidoptera")
+# load spatial study plots (geopackage)
+study_plots <- st_read ("U:/Günztal/Günztal/Auswertung_Daten/Geodaten/Probeflächen2020_Tagfalter_Heuschrecken.gpkg")
+# load elevation data
+elevationN <- raster ("U:/Günztal/Günztal/Auswertung_Daten/Geodaten/elevation/N48E010.hgt")
+elevationS <- raster ("U:/Günztal/Günztal/Auswertung_Daten/Geodaten/elevation/N47E010.hgt")
+# merge elevation scenes
+elevation <- raster::merge (elevationN, elevationS)
+## data compability and conversation
+# set CRS to Gauss-Krüger 4 and clip elevation with buffered study plots (reduces computational power lateron)
+GK4 <- CRS("+init=epsg:31468")
+elevation_GK4 <- elevation %>%
+projectRaster(crs=GK4) %>%
+raster::crop (y = st_buffer(study_plots, dist = 200))
+# have a look
+mapview(study_plots) + mapview (elevation_GK4)
+## generate indices from elevation
+# compute heatload and topographic position index
+heat_load <- hli(elevation_GK4)
+topographic_position <- tpi (elevation_GK4, scale = 3) # scale sets the focal radius in pixels
+## join spatial data
+glo0 <- # "günztal lepidoptera orthoptera"
+study_plots %>% transmute (
+ID = as.factor (FID_1),
+elevation = as.numeric (extract (elevation_GK4, study_plots, fun = mean)),
+heat_load = as.numeric (extract (heat_load, study_plots,fun = mean)),
+topographic_position = as.numeric (extract (topographic_position, study_plots,fun = mean)),
+area = st_area (study_plots),
+center = st_centroid(study_plots)$geom,
+geom = study_plots$geom
+)
+# make parameter latitude
+glo0$latitude <- st_coordinates(glo0$center)[40:78] # strange: coordinates for x and y organized in one single vector...
+# join by ID
+Orthoptera$ID <- as.factor (Orthoptera$FID)
+Lepidoptera$ID <- as.factor (Lepidoptera$FID)
+glo <- left_join (glo0, Orthoptera, by = "ID") %>% left_join (Lepidoptera, by = "ID")
+# rename species number cols
+glo <-  glo %>% rename (
+O_species = Artenzahl.x,
+L_species = Artenzahl.y
+)
+# useful vectors: species groups
+orth <- names (Orthoptera[2:22])
+lepi <- names (Lepidoptera [3:48])
+red_list_L <- read.xlsx ("U:/Günztal/Günztal/Auswertung_Daten/Rote Listen/rl_tagfalter_bayern_gesamt.xlsx") %>%
+dplyr::select(RL.BY.2016, Wissenschaftlicher.Name) %>%
+drop_na()
+red_list_L <- subset (red_list_L, red_list_L$Wissenschaftlicher.Name %in% lepi)
+lepiT <- subset (red_list_L, red_list_L$RL.BY.2016!="*") $ Wissenschaftlicher.Name
+red_list_O <- read.xlsx ("U:/Günztal/Günztal/Auswertung_Daten/Rote Listen/rl_heuschrecken_bayern_gesamt.xlsx") %>%
+dplyr::select(RL.BY.2016, Wissenschaftlicher.Name) %>%
+drop_na()
+red_list_O <- subset (red_list_O, red_list_O$Wissenschaftlicher.Name %in% orth)
+orthT <- subset (red_list_O, red_list_O$RL.BY.2016!="*") $ Wissenschaftlicher.Name
+# count threatened species
+glo$threatO <- glo  %>% as.data.frame () %>% dplyr:: select (orthT) %>% rowSums (na.rm=T)
+glo$threatL <- glo  %>% as.data.frame () %>% dplyr:: select (lepiT) %>% rowSums (na.rm=T)
+for (i in 1:length(glo$ID)){
+tspO <- glo [i,]  %>% as.data.frame () %>% dplyr:: select (orthT) %>% rowSums (na.rm=T)# count threatened species in focal plot
+o_plots[i, "NO_ENDANGERED"] <- length (endangered_in_plot)
+}
+# useful vectors: environmental parameters
+envi <-  c ("elevation", "heat_load", "topographic_position", "area", "latitude")
+GLO_dataset <- list ("glo" = glo, "orth" = orth, "lepi" = lepi, "envi" = envi)
+list.save (GLO_dataset,
+file = "U:/Günztal/Günztal/Auswertung_Daten/R/GLO_dataset.rds")
+# load packages ####
+# ggf. müssen Pakete zunächst installiert werden, e.g.
+# install.packages ("tidyverse")
+library (tidyverse) # tidy Umgebung
+library (lme4) # Paket für mixed models
+library (MuMIn) # model averaging
+library (openxlsx) # speichern von Excel-Dateien
+library (ggeffects) # dieses Paket wird zur Berechnung der Konfidenzintervalle genutzt
+# make some data ####
+## Erstelle diverse Variablen
+set.seed (5343)
+dep <- rpois (120, 5)
+v1 <- (runif (120, 3, 7) * ((dep^2 + 1) / 10))
+v2 <- (rnorm (120, 1, 0.1) / (dep + 1) ) %>% scale ()
+v3 <- runif (120, 2, 4) %>% scale ()
+v4 <- (seq (1, 10, length.out = 120) * rnorm (120, 1, 0.2)) %>% scale ()
+rfac <- rep (c ("A", "B", "C", "D"), 30)
+depend <- dep + c (rep (0, 14), 1)
+## Erstelle Datensatz
+dat <- data.frame(depend = depend, var1 = v1, var2 = v2, var3 = v3, var4 = v4, rfac = rfac)
+# statistics ####
+## mixed model
+m1 <- glmer (depend ~ var1 + var2 + var3 + var4 + (1|rfac),
+data = dat, family = "poisson")
+summary (m1)
+## dredge
+options(na.action = na.fail)
+d1 <- dredge (m1)
+## average model
+mavg1 <- model.avg (d1, subset = delta < 2, fit = TRUE)
+summary (mavg1)
+# Confidence intervals ####
+# Problem: meine Recherche hat ergeben, dass es (vermutlich?) keine
+# Möglichkeit gibt, für average models ein Konfidenzinterval
+# zu berechnen. Ersatzweise nutze ich hier ein neues "full model",
+# welches alle Variablen aus dem average model enthält. Nicht optimal,
+# aber der einzige Work-around, den ich gefunden habe.
+#
+# Sollte es DOCH jemand eine Korrekte Möglichkeit finden, Konfidenzintervalle für
+# average models zu berechnen, wird um Rückmeldung gebeten.
+# Disclaimer: man wird vieles finden à la "2 * Standardfehler". Das ist aber
+# für GLMMs nicht korrekt!
+mhelp <- glmer (depend ~ var1 + var2 + var3 + (1|rfac), # ersatzmodell für average model
+data = dat, family = "poisson")
+## Vergleiche Modelle
+summary (mhelp)
+summary (mavg1)
+# --> es gibt Unterschiede, die in der Praxis aber ggf. nicht wirklich zu Bemerken sind
+# (siehe Vergleichsplot unten)
+# Vorhersagen mit Konfidenzintervall (95 %) für das Ersatzmodell,
+# hier am Beispiel der Variable var2.
+# Man kann "xx" auch weglassen; im Zweifel führt das aber zu
+# weniger smoothen Kurven.
+xx <- seq (min (dat$var2), max (dat$var2), length.out = 120) # make continuous vector for x-axis
+pred1 <- ggpredict (mhelp, "var2 [xx]")
+pred1 # eine Art Summary-Ausgabe
+pred1$predicted # tatsächliche Länge und Werte der prediction
+# für mehr Info siehe
+? ggpredict
+# Plotting ####
+# set theme for plotting
+simple_theme <-     theme (panel.background = element_blank(), # esthetics of the figure
+axis.line = element_line(),
+panel.border = element_rect (fill = NA))
+## plot average model
+# estimates of average model
+avg_estim <- summary (mavg1) $ coefmat.full [,1]
+intercept <- avg_estim [1]
+est1 <- avg_estim [2]
+est2 <- avg_estim [3]
+est3 <- avg_estim [4]
+REST <- mean (dat$var1)*est1 + mean (dat$var3) + est3
+pavg <- ggplot (mapping = aes (x = var2, y = depend)) +
+geom_point(data = dat) + # Scatterplot
+geom_line (aes (x = xx, # Regressionsgerade
+y = exp (intercept + est2 * xx + REST))) + # formula for curve (siehe Anleitung Abbildung Poisson-GLMM)
+simple_theme
+pavg
+## plot ersatz-Modell mit Konfidenzintervallen
+p1 <- ggplot (mapping = aes ()) +
+geom_point(aes (x = var2, y = depend), data = dat) +
+geom_line (aes(x = x, predicted), data = pred1) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = pred1, alpha = .3) +
+simple_theme
+p1
+# zum Vergleich kann man das average model (hier in rot) einzeichnen -
+# in diesem Beispiel sind kaum Unterschiede sichtbar;
+# wird also im Zweifel keinen Gutachter stören (?)
+p1 + geom_line (aes (x = xx,
+y = exp (intercept + est2 * xx + REST)),
+colour = "red")
+# Data Export for sigma plot ####
+attach (pred1)
+SP_reg <- data.frame(x, predicted, conf.low, conf.high) # regression line + CI Data Table
+detach (pred1)
+exp_dat <- list (original_data = dat, regression_data = SP_reg) # Erstelle Liste mit allen zu exportierenden Datensätzen
+write.xlsx(x = exp_dat, file = "PutYourPath.xlsx") # ersetze PutYourPath durch den Ort, an dem du die Datentabelle abspeichern möchtest
+# packages ####
+#packages ####
+library (tidyverse)  # tidy umgebung
+library (raster)     # raster data management
+library (sf)         # modern spatial data management
+library (spatialEco) # tpi, hli package
+library (mapview)    # visualization of geodata
+library (openxlsx)   # read and write excel files
+library (rlist)      # save and read lists to and from hard drive
+library (IBL)
+# library (lme4)
+library (ggeffects)
+# functions ####
+annotate_text <- function(label, x, y, facets=NULL, hjust=0, vjust=0, color='black', alpha=NA,
+family=thm$text$family, size=thm$text$size, fontface=1, lineheight=1.0,
+box_just=ifelse(c(x,y)<0.5,0,1), margin=unit(size/2, 'pt'), thm=theme_get()) {
+x <- scales::squish_infinite(x)
+y <- scales::squish_infinite(y)
+data <- if (is.null(facets)) data.frame(x=NA) else data.frame(x=NA, facets)
+tg <- grid::textGrob(
+label, x=0, y=0, hjust=hjust, vjust=vjust,
+gp=grid::gpar(col=alpha(color, alpha), fontsize=size, fontfamily=family, fontface=fontface, lineheight=lineheight)
+)
+ts <- grid::unit.c(grid::grobWidth(tg), grid::grobHeight(tg))
+vp <- grid::viewport(x=x, y=y, width=ts[1], height=ts[2], just=box_just)
+tg <- grid::editGrob(tg, x=ts[1]*hjust, y=ts[2]*vjust, vp=vp)
+inner <- grid::grobTree(tg, vp=grid::viewport(width=unit(1, 'npc')-margin*2, height=unit(1, 'npc')-margin*2))
+layer(
+data = NULL,
+stat = StatIdentity,
+position = PositionIdentity,
+geom = GeomCustomAnn,
+inherit.aes = TRUE,
+params = list(
+grob=grid::grobTree(inner),
+xmin=-Inf,
+xmax=Inf,
+ymin=-Inf,
+ymax=Inf
+)
+)
+}
+# read data ####
+GLO_dataset <- list.load ("U:/Günztal/Günztal/Auswertung_Daten/R/GLO_dataset.rds")
+list2env (GLO_dataset, envir = .GlobalEnv)
+rm (GLO_dataset)
+# some simple plots ####
+# drop units and geom for plotting
+glo_plot <- glo
+st_geometry(glo_plot) <- NULL
+units (glo_plot$area) <- NULL
+envi # just to check for variable names
+## latitude plot
+lat_plot <-
+ggplot (glo_plot) +
+geom_point (mapping = aes (x = latitude, y = L_species), fill = IBL_blue (1), pch = 21, size = 3) +
+geom_point (mapping = aes (x = latitude, y = O_species), fill = IBL_green (1), pch = 21, size = 3) +
+#add some aesthetics
+ylab ("Species Number") +
+xlab ("Latitude [GK]") +
+IBL_y_scale (air = T) +
+IBL_x_scale() +
+IBL_theme()
+# glm
+xx <- seq (min (glo$latitude), max (glo$latitude), length.out = 120) # make continuous vector for x-axis
+mLatL <- glm (L_species ~ latitude, data = glo, family = "poisson")
+mLatL %>% summary
+mLatO <- glm (O_species ~ latitude, data = glo, family = "poisson")
+mLatO %>% summary
+predLatL <- ggpredict (mLatL, "latitude[xx]")
+predLatO <- ggpredict (mLatO, "latitude[xx]")
+lat_plot +
+geom_line (aes(x = x, predicted), data = predLatL, col =  IBL_blue (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatL, fill =  IBL_blue (5), alpha = .3) +
+geom_line (aes(x = x, predicted), data = predLatO, col =  IBL_green (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatO, fill =  IBL_green (5), alpha = .3) +
+# add "legend"
+annotate_text ( label = "Lepidoptera***", x = 0.95, y = 0.98, color = IBL_blue (3), size = 18, family = "Chantilly",  hjust = 1) +
+annotate_text ( label = "Orthoptera***", x = 0.95, y = 0.9, color = IBL_green (3), size = 18, family = "Chantilly",  hjust = 1)
+## latitude plot - threatened species
+lat_plotT <-
+ggplot (glo_plot) +
+geom_point (mapping = aes (x = latitude, y = threatL), fill = IBL_blue (1), pch = 21, size = 3) +
+geom_point (mapping = aes (x = latitude, y = threatO), fill = IBL_green (1), pch = 21, size = 3) +
+#add some aesthetics
+ylab ("Threatened Species") +
+xlab ("Latitude [GK]") +
+IBL_y_scale (air = T) +
+IBL_x_scale() +
+IBL_theme()
+# glm
+xx <- seq (min (glo$latitude), max (glo$latitude), length.out = 120) # make continuous vector for x-axis
+mLatLT <- glm (threatL ~ latitude, data = glo, family = "poisson")
+mLatLT %>% summary
+mLatOT <- glm (threatO ~ latitude, data = glo, family = "poisson")
+mLatOT %>% summary
+predLatLT <- ggpredict (mLatLT, "latitude[xx]")
+predLatOT <- ggpredict (mLatOT, "latitude[xx]")
+lat_plotT +
+geom_line (aes(x = x, predicted), data = predLatLT, col =  IBL_blue (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatLT, fill =  IBL_blue (5), alpha = .3) +
+geom_line (aes(x = x, predicted), data = predLatOT, col =  IBL_green (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatOT, fill =  IBL_green (5), alpha = .3) +
+# add "legend"
+annotate_text ( label = "Lepidoptera***", x = 0.95, y = 0.98, color = IBL_blue (3), size = 18, family = "Chantilly",  hjust = 1) +
+annotate_text ( label = "Orthoptera*", x = 0.95, y = 0.9, color = IBL_green (3), size = 18, family = "Chantilly",  hjust = 1)
+IBL_draw_plot (lat_plot, lat_plotT)
+# packages ####
+#packages ####
+library (tidyverse)  # tidy umgebung
+library (raster)     # raster data management
+library (sf)         # modern spatial data management
+library (spatialEco) # tpi, hli package
+library (mapview)    # visualization of geodata
+library (openxlsx)   # read and write excel files
+library (rlist)      # save and read lists to and from hard drive
+library (IBL)
+# library (lme4)
+library (ggeffects)
+# functions ####
+annotate_text <- function(label, x, y, facets=NULL, hjust=0, vjust=0, color='black', alpha=NA,
+family=thm$text$family, size=thm$text$size, fontface=1, lineheight=1.0,
+box_just=ifelse(c(x,y)<0.5,0,1), margin=unit(size/2, 'pt'), thm=theme_get()) {
+x <- scales::squish_infinite(x)
+y <- scales::squish_infinite(y)
+data <- if (is.null(facets)) data.frame(x=NA) else data.frame(x=NA, facets)
+tg <- grid::textGrob(
+label, x=0, y=0, hjust=hjust, vjust=vjust,
+gp=grid::gpar(col=alpha(color, alpha), fontsize=size, fontfamily=family, fontface=fontface, lineheight=lineheight)
+)
+ts <- grid::unit.c(grid::grobWidth(tg), grid::grobHeight(tg))
+vp <- grid::viewport(x=x, y=y, width=ts[1], height=ts[2], just=box_just)
+tg <- grid::editGrob(tg, x=ts[1]*hjust, y=ts[2]*vjust, vp=vp)
+inner <- grid::grobTree(tg, vp=grid::viewport(width=unit(1, 'npc')-margin*2, height=unit(1, 'npc')-margin*2))
+layer(
+data = NULL,
+stat = StatIdentity,
+position = PositionIdentity,
+geom = GeomCustomAnn,
+inherit.aes = TRUE,
+params = list(
+grob=grid::grobTree(inner),
+xmin=-Inf,
+xmax=Inf,
+ymin=-Inf,
+ymax=Inf
+)
+)
+}
+# read data ####
+GLO_dataset <- list.load ("U:/Günztal/Günztal/Auswertung_Daten/R/GLO_dataset.rds")
+list2env (GLO_dataset, envir = .GlobalEnv)
+rm (GLO_dataset)
+names (glo)
+# some simple plots ####
+# drop units and geom for plotting
+glo_plot <- glo
+st_geometry(glo_plot) <- NULL
+units (glo_plot$area) <- NULL
+envi # just to check for variable names
+## latitude plot
+lat_plot <-
+ggplot (glo_plot) +
+geom_point (mapping = aes (x = latitude, y = L_species), fill = IBL_blue (1), pch = 21, size = 3) +
+geom_point (mapping = aes (x = latitude, y = O_species), fill = IBL_green (1), pch = 21, size = 3) +
+#add some aesthetics
+ylab ("Species Number") +
+xlab ("Latitude [GK]") +
+IBL_y_scale (air = T) +
+IBL_x_scale() +
+IBL_theme()
+# glm
+xx <- seq (min (glo$latitude), max (glo$latitude), length.out = 120) # make continuous vector for x-axis
+mLatL %>% summary
+mLatL <- glm (L_species ~ latitude, data = glo, family = "poisson")
+mLatO <- glm (O_species ~ latitude, data = glo, family = "poisson")
+mLatO %>% summary
+predLatL <- ggpredict (mLatL, "latitude[xx]")
+predLatO <- ggpredict (mLatO, "latitude[xx]")
+lat_plot +
+geom_line (aes(x = x, predicted), data = predLatL, col =  IBL_blue (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatL, fill =  IBL_blue (5), alpha = .3) +
+geom_line (aes(x = x, predicted), data = predLatO, col =  IBL_green (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatO, fill =  IBL_green (5), alpha = .3) +
+# add "legend"
+annotate_text ( label = "Lepidoptera***", x = 0.95, y = 0.98, color = IBL_blue (3), size = 18, family = "Chantilly",  hjust = 1) +
+annotate_text ( label = "Orthoptera***", x = 0.95, y = 0.9, color = IBL_green (3), size = 18, family = "Chantilly",  hjust = 1)
+## latitude plot - threatened species
+lat_plotT <-
+ggplot (glo_plot) +
+geom_point (mapping = aes (x = latitude, y = threatL), fill = IBL_blue (1), pch = 21, size = 3) +
+geom_point (mapping = aes (x = latitude, y = threatO), fill = IBL_green (1), pch = 21, size = 3) +
+#add some aesthetics
+ylab ("Threatened Species") +
+xlab ("Latitude [GK]") +
+IBL_y_scale (air = T) +
+IBL_x_scale() +
+IBL_theme()
+# glm
+xx <- seq (min (glo$latitude), max (glo$latitude), length.out = 120) # make continuous vector for x-axis
+mLatLT <- glm (threatL ~ latitude, data = glo, family = "poisson")
+mLatLT %>% summary
+mLatOT <- glm (threatO ~ latitude, data = glo, family = "poisson")
+mLatOT %>% summary
+predLatLT <- ggpredict (mLatLT, "latitude[xx]")
+predLatOT <- ggpredict (mLatOT, "latitude[xx]")
+lat_plotT +
+geom_line (aes(x = x, predicted), data = predLatLT, col =  IBL_blue (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatLT, fill =  IBL_blue (5), alpha = .3) +
+geom_line (aes(x = x, predicted), data = predLatOT, col =  IBL_green (3)) +
+geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), data = predLatOT, fill =  IBL_green (5), alpha = .3) +
+# add "legend"
+annotate_text ( label = "Lepidoptera***", x = 0.95, y = 0.98, color = IBL_blue (3), size = 18, family = "Chantilly",  hjust = 1) +
+annotate_text ( label = "Orthoptera*", x = 0.95, y = 0.9, color = IBL_green (3), size = 18, family = "Chantilly",  hjust = 1)
+IBL_draw_plot (lat_plot, lat_plotT)
+IBL_draw_plot (list (lat_plot, lat_plotT))
+library(IBL)
+?cowplot::plot_grid
+library(IBL)
+library(IBL)
+list (c (1,2))
+list (1,2)
+list (1,2) %>% max
+list (1,2) %>% max ()
+max (list (1,2))
+max (c(1,2))
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+test [[7]] <- 9
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)
+library(IBL)

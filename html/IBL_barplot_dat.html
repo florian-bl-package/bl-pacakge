@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: IBL Barplot data table'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for IBL_barplot_dat {IBL}"><tr><td>IBL_barplot_dat {IBL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>IBL Barplot data table'</h2>
+
+<h3>Description</h3>
+
+<p>IBL_barplot_dat takes a table of raw data and puts out a summary (mean and standard error) of a focal variable grouped by up to two grouping variables. The resulting table is especially useful for plotting barplots with ggplot2.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+IBL_barplot_dat(input_frame = NA, focal_var = NA, group_var1 = NA,
+  group_var2 = NA, order1 = NA, order2 = NA, error_bar = F)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>input_frame</code></td>
+<td>
+<p>A data frame containing the raw data to be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>focal_var</code></td>
+<td>
+<p>The focal variable. Must be numeric. Can contain NAs, however, NAs always need a sensible approach.</p>
+</td></tr>
+<tr valign="top"><td><code>group_var1</code></td>
+<td>
+<p>The first order groupng variable. Must be specified.</p>
+</td></tr>
+<tr valign="top"><td><code>group_var2</code></td>
+<td>
+<p>Optional. A second order grouping variable.</p>
+</td></tr>
+<tr valign="top"><td><code>order1</code></td>
+<td>
+<p>Optional. The order of the levels of group_var1</p>
+</td></tr>
+<tr valign="top"><td><code>order2</code></td>
+<td>
+<p>Optional. The order of the levels of group_var2. Is ignored if group_var2 is not specified.</p>
+</td></tr>
+<tr valign="top"><td><code>error_bar</code></td>
+<td>
+<p>Logical. Should error bars be computed?</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+#
+morley
+IBL_barplot_dat (input_frame = morley, focal_var = "Speed", group_var1 = "Expt")
+#
+#
+#
+mpg
+IBL_barplot_dat (mpg, "cty", "drv", "class", error_bar = T, order1 = c ("f", "4", "r"))
+#
+#
+#
+library (tidyverse)
+npk %&gt;% IBL_barplot_dat ("yield", "N", "P", error_bar = T)
+
+plot_dat &lt;- IBL_barplot_dat (npk, "yield", "N", "P", error_bar = T)
+ggplot (plot_dat, aes (x = N, y = yield, fill = P)) +
+geom_bar (stat = "identity", position = "dodge", color = "black" ) +
+geom_errorbar (aes (ymin = yield - SE_yield,
+              ymax = yield + SE_yield),
+              width = 0.3,
+              position = position_dodge (.9)) +
+scale_fill_manual (values = c (IBL_blue (1), IBL_blue (5))) +
+IBL_y_scale (limits = c (0, 65), air = F) +
+theme (legend.position = "none") +
+IBL_theme ()
+
+## no use without categorical variables:
+## nottem
+## IBL_barplot_dat (nottem, "Jan", "Feb")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>IBL</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

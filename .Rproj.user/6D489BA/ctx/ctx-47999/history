@@ -1,0 +1,512 @@
+AIC_delta = 3,
+graph.arrange = 3)
+split_models [[paste0 ("multiple_reg__", i, "__", j)  ]] <- the_result [1:5]
+}
+}
+split_models
+split_models [1]
+multiple_GLMM
+?multiple_GLMM
+split_models [1] [1]
+split_models [[1]]
+split_models [1]
+split_models [1] $`multiple_reg__hay meadow__NO_ORTHO`$average_model
+split_models
+# packages ####
+library (sf)         # modern spatial data management
+library (lme4)
+library (MuMIn)
+library (tidyverse)  # tidy umgebung
+library (crayon)     # string colours
+library (r2glmm)
+library (openxlsx)                                    #needed to read and store excel files
+library (IBL)
+# load data ####
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (ID, GEBIET, TYPE, LUI, shannon, NO_ORTHO, elevation, heatload_mean, heatload_range, TPI_mean, TPI_range, CFI_best)
+#add some jitter for overlaying points at LUI = 0
+plot_dat <- o_plots
+plot_dat $ LUI <- plot_dat$LUI %>% na_if (0)
+plot_dat $ LUI [is.na (plot_dat $ LUI)] <- runif(22)/5
+type_data <- list ()
+for (i in levels (plot_dat $ TYPE)) {
+plot_dat [[i]] <-
+plot_dat %>%
+as_tibble() %>%
+filter (TYPE == i)
+}
+hay <- type_data [[1]]
+past <-type_data [[2]]
+wet <- type_data [[3]]
+# Stats ####
+# hay meadow
+spec_no_glob_hay <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = hay, family = "poisson", na.action = na.fail)
+dredge_hay <- dredge (spec_no_glob_hay, m.max = 4)
+avg_hay <- model.avg (dredge_hay, subset = delta < 3, fit = TRUE)
+summary (avg_hay)
+# pasture
+spec_no_glob_past <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = past, family = "poisson", na.action = na.fail)
+dredge_past <- dredge (spec_no_glob_past, m.max = 4)
+avg_past <- model.avg (dredge_past, subset = delta < 3, fit = TRUE)
+summary (avg_past)
+# wetland
+spec_no_glob_wet  <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = wet, family = "poisson", na.action = na.fail)
+dredge_wet <- dredge (spec_no_glob_wet, m.max = 4)
+dredge_wet
+best_wet <- glmer (getCall(dredge_wet, 1), data = wet, family = "poisson")
+summary (best_wet)
+rcompanion::nagelkerke (best_wet, null = glmer (NO_ORTHO ~ (1|GEBIET),
+data = wet, family = "poisson",
+na.action = na.fail))
+# Plots Alternative I ####
+x_lab <- "Landuse Intensity"
+y_lab <- "Species Number"
+## hay
+plot_hay <- hay %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_hay
+#add regression line
+hay_estimates <- summary (avg_hay) $ coefmat.full [,1]
+names (hay_estimates) [1] <- "Intercept"
+hay_Intercept <- hay_estimates ["Intercept"]
+hay_est_LUI <- hay_estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+hay_est_rest <- hay_estimates [! names (hay_estimates) %in% remove]
+hay_dat_rest <- hay [names (hay_est_rest)] %>% colMeans ()
+hay_rest <- hay_est_rest * hay_dat_rest
+plot_hay <- plot_hay + geom_line (aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+plot_hay <- IBL_title (plot_hay, "a) hay meadow. ***", x = 0, y = 1)
+IBL_draw_plot (plot_hay)
+## past
+plot_past <- past %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_past
+plot_past <- IBL_title (plot_past, "b) Pasture. n.s.", x = 0, y = 1)
+IBL_draw_plot (plot_past)
+## wet
+plot_wet <- wet %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_wet
+#add regression line
+estimates <- summary (best_wet) $ coefficients [,1]
+names (estimates) [1] <- "Intercept"
+Intercept <- estimates ["Intercept"]
+est_LUI <- estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+est_rest <- estimates [! names (estimates) %in% remove]
+dat_rest <- wet [names (est_rest)] %>% colMeans ()
+rest <- est_rest * dat_rest
+plot_wet <- plot_wet + geom_line (aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7)
+plot_wet <- IBL_title (plot_wet, "c) Wetland. **", x = 0, y = 1)
+IBL_draw_plot (plot_wet)
+fig02_I <- IBL_draw_plot(list (plot_hay, plot_past, plot_wet))
+IBL_save_svg (fig02_I, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_I")
+# Plots Alternative II ####
+plot_all <- plot_dat %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO, color = TYPE)) +
+scale_color_manual (values = c (IBL_green(3), IBL_red(1), IBL_blue(3)),
+labels = c("HAY", "PAST", "WET")) +
+geom_point (shape = 19,
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme (legend.title = element_blank(),
+legend.background = element_blank(),
+legend.key = element_blank(),
+legend.position = c(0.8, 0.9))
+plot_all <- plot_all + geom_line (data = wet, aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7) +
+geom_line (data = hay, aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+fig02_II <- IBL_draw_plot (plot_all)
+# packages ####
+library (sf)         # modern spatial data management
+library (lme4)
+library (MuMIn)
+library (tidyverse)  # tidy umgebung
+library (crayon)     # string colours
+library (r2glmm)
+library (openxlsx)                                    #needed to read and store excel files
+library (IBL)
+# load data ####
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (ID, GEBIET, TYPE, LUI, shannon, NO_ORTHO, elevation, heatload_mean, heatload_range, TPI_mean, TPI_range, CFI_best)
+#add some jitter for overlaying points at LUI = 0
+plot_dat <- o_plots
+plot_dat $ LUI <- plot_dat$LUI %>% na_if (0)
+plot_dat $ LUI [is.na (plot_dat $ LUI)] <- runif(22)/5
+type_data <- list ()
+for (i in levels (plot_dat $ TYPE)) {
+plot_dat [[i]] <-
+plot_dat %>%
+as_tibble() %>%
+filter (TYPE == i)
+}
+hay <- type_data [[1]]
+past <-type_data [[2]]
+wet <- type_data [[3]]
+# packages ####
+library (sf)         # modern spatial data management
+library (lme4)
+library (MuMIn)
+library (tidyverse)  # tidy umgebung
+library (crayon)     # string colours
+library (r2glmm)
+library (openxlsx)                                    #needed to read and store excel files
+library (IBL)
+# load data ####
+# load data ####
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (ID, GEBIET, TYPE, LUI, shannon, NO_ORTHO, elevation, heatload_mean, heatload_range, TPI_mean, TPI_range, CFI_best)
+#add some jitter for overlaying points at LUI = 0
+plot_dat <- o_plots
+plot_dat $ LUI <- plot_dat$LUI %>% na_if (0)
+plot_dat $ LUI [is.na (plot_dat $ LUI)] <- runif(22)/5
+plot_dat
+plot_dat $ LUI [is.na (plot_dat $ LUI)] <- runif(22)/5
+plot_dat
+type_data <- list ()
+type_data
+for (i in levels (plot_dat $ TYPE)) {
+type_data [[i]] <-
+plot_dat %>%
+as_tibble() %>%
+filter (TYPE == i)
+}
+hay <- type_data [[1]]
+past <-type_data [[2]]
+wet <- type_data [[3]]
+# packages ####
+library (sf)         # modern spatial data management
+library (lme4)
+library (MuMIn)
+library (tidyverse)  # tidy umgebung
+library (crayon)     # string colours
+library (r2glmm)
+library (openxlsx)                                    #needed to read and store excel files
+library (IBL)
+# load data ####
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (ID, GEBIET, TYPE, LUI, shannon, NO_ORTHO, elevation, heatload_mean, heatload_range, TPI_mean, TPI_range, CFI_best)
+#add some jitter for overlaying points at LUI = 0
+plot_dat <- o_plots
+plot_dat $ LUI <- plot_dat$LUI %>% na_if (0)
+plot_dat $ LUI [is.na (plot_dat $ LUI)] <- runif(22)/5
+type_data <- list ()
+for (i in levels (plot_dat $ TYPE)) {
+type_data [[i]] <-
+plot_dat %>%
+as_tibble() %>%
+filter (TYPE == i)
+}
+hay <- type_data [[1]]
+past <-type_data [[2]]
+wet <- type_data [[3]]
+# Stats ####
+# hay meadow
+spec_no_glob_hay <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = hay, family = "poisson", na.action = na.fail)
+dredge_hay <- dredge (spec_no_glob_hay, m.max = 4)
+avg_hay <- model.avg (dredge_hay, subset = delta < 3, fit = TRUE)
+summary (avg_hay)
+# pasture
+spec_no_glob_past <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = past, family = "poisson", na.action = na.fail)
+dredge_past <- dredge (spec_no_glob_past, m.max = 4)
+avg_past <- model.avg (dredge_past, subset = delta < 3, fit = TRUE)
+summary (avg_past)
+# wetland
+spec_no_glob_wet  <- glmer (NO_ORTHO ~
+LUI + shannon + heatload_range + TPI_range + elevation +
+(1|GEBIET),
+data = wet, family = "poisson", na.action = na.fail)
+dredge_wet <- dredge (spec_no_glob_wet, m.max = 4)
+dredge_wet
+best_wet <- glmer (getCall(dredge_wet, 1), data = wet, family = "poisson")
+summary (best_wet)
+rcompanion::nagelkerke (best_wet, null = glmer (NO_ORTHO ~ (1|GEBIET),
+data = wet, family = "poisson",
+na.action = na.fail))
+# Plots Alternative I ####
+x_lab <- "Landuse Intensity"
+y_lab <- "Species Number"
+## hay
+plot_hay <- hay %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_hay
+#add regression line
+hay_estimates <- summary (avg_hay) $ coefmat.full [,1]
+names (hay_estimates) [1] <- "Intercept"
+hay_Intercept <- hay_estimates ["Intercept"]
+hay_est_LUI <- hay_estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+hay_est_rest <- hay_estimates [! names (hay_estimates) %in% remove]
+hay_dat_rest <- hay [names (hay_est_rest)] %>% colMeans ()
+hay_rest <- hay_est_rest * hay_dat_rest
+plot_hay <- plot_hay + geom_line (aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+plot_hay <- IBL_title (plot_hay, "a) hay meadow. ***", x = 0, y = 1)
+IBL_draw_plot (plot_hay)
+## past
+plot_past <- past %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_past
+plot_past <- IBL_title (plot_past, "b) Pasture. n.s.", x = 0, y = 1)
+IBL_draw_plot (plot_past)
+## wet
+plot_wet <- wet %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_wet
+#add regression line
+estimates <- summary (best_wet) $ coefficients [,1]
+names (estimates) [1] <- "Intercept"
+Intercept <- estimates ["Intercept"]
+est_LUI <- estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+est_rest <- estimates [! names (estimates) %in% remove]
+dat_rest <- wet [names (est_rest)] %>% colMeans ()
+rest <- est_rest * dat_rest
+plot_wet <- plot_wet + geom_line (aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7)
+plot_wet <- IBL_title (plot_wet, "c) Wetland. **", x = 0, y = 1)
+IBL_draw_plot (plot_wet)
+fig02_I <- IBL_draw_plot(list (plot_hay, plot_past, plot_wet))
+IBL_save_svg (fig02_I, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_I")
+# Plots Alternative II ####
+plot_all <- plot_dat %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO, color = TYPE)) +
+scale_color_manual (values = c (IBL_green(3), IBL_red(1), IBL_blue(3)),
+labels = c("HAY", "PAST", "WET")) +
+geom_point (shape = 19,
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme (legend.title = element_blank(),
+legend.background = element_blank(),
+legend.key = element_blank(),
+legend.position = c(0.8, 0.9))
+plot_all <- plot_all + geom_line (data = wet, aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7) +
+geom_line (data = hay, aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+fig02_II <- IBL_draw_plot (plot_all)
+IBL_save_svg (fig02_II, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_II")
+x_lab <- "Landuse Intensity"
+y_lab <- "Species Number"
+## hay
+plot_hay <- hay %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_hay
+#add regression line
+hay_estimates <- summary (avg_hay) $ coefmat.full [,1]
+names (hay_estimates) [1] <- "Intercept"
+hay_Intercept <- hay_estimates ["Intercept"]
+hay_est_LUI <- hay_estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+hay_est_rest <- hay_estimates [! names (hay_estimates) %in% remove]
+hay_dat_rest <- hay [names (hay_est_rest)] %>% colMeans ()
+hay_rest <- hay_est_rest * hay_dat_rest
+plot_hay <- plot_hay + geom_line (aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .4)
+plot_hay <- IBL_title (plot_hay, "a) hay meadow. ***", x = 0, y = 1)
+IBL_draw_plot (plot_hay)
+## past
+plot_past <- past %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_past
+plot_past <- IBL_title (plot_past, "b) Pasture. n.s.", x = 0, y = 1)
+IBL_draw_plot (plot_past)
+## wet
+plot_wet <- wet %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO)) +
+geom_point (shape = 19,                                       # shape: number (0 - 25) for different *point* symbols
+fill = "black",
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme ()
+plot_wet
+#add regression line
+estimates <- summary (best_wet) $ coefficients [,1]
+names (estimates) [1] <- "Intercept"
+Intercept <- estimates ["Intercept"]
+est_LUI <- estimates ["LUI"]
+remove <- c ("Intercept", "LUI")
+est_rest <- estimates [! names (estimates) %in% remove]
+dat_rest <- wet [names (est_rest)] %>% colMeans ()
+rest <- est_rest * dat_rest
+plot_wet <- plot_wet + geom_line (aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .4)
+plot_wet <- IBL_title (plot_wet, "c) Wetland. **", x = 0, y = 1)
+IBL_draw_plot (plot_wet)
+fig02_I <- IBL_draw_plot(list (plot_hay, plot_past, plot_wet))
+IBL_save_svg (fig02_I, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_I")
+# Plots Alternative II ####
+plot_all <- plot_dat %>%
+ggplot (mapping = aes (x = LUI, y = NO_ORTHO, color = TYPE)) +
+scale_color_manual (values = c (IBL_green(3), IBL_red(1), IBL_blue(3)),
+labels = c("HAY", "PAST", "WET")) +
+geom_point (shape = 19,
+size = 1) +
+IBL_y_scale(limits = c (0,23)) +
+IBL_x_scale(limits = c(0, 5)) +
+labs (x = x_lab, y = y_lab) +
+IBL_theme (legend.title = element_blank(),
+legend.background = element_blank(),
+legend.key = element_blank(),
+legend.position = c(0.8, 0.9))
+plot_all <- plot_all + geom_line (data = wet, aes (x = LUI,
+y = exp (Intercept + est_LUI * LUI + sum (rest))),
+size = .7) +
+geom_line (data = hay, aes (x = LUI,
+y = exp (hay_Intercept + hay_est_LUI * LUI + sum (hay_rest))),
+size = .7)
+fig02_II <- IBL_draw_plot (plot_all)
+IBL_save_svg (fig02_II, file_path = "P:/fumy_kaempfer_fartmann_orthoptera/figures/fig02_II")
+fig_1
+library (IBL)
+library (sf)         # modern spatial data management
+library (tidyverse)
+# figure standard sizes: Angaben zu Standardgrößen (einspaltig, zweispaltig, 1.5-spaltig) von Grafiken
+single_column <- 90         # in mm; Elsevier
+double_column <- 190        # in mm; Elsevier
+singleAndHalf_column <- 140 # in mm; Elsevier
+setwd ("U:/Promotion/Dissertation im engeren Sinne/05 statistic/fumy_kaempfer_fartmann_orthoptera")
+o_plots <- st_read ("o_plots_processed.gpkg")
+o_plots <- o_plots %>% data.frame () %>% select (-geom)
+# COMPARISON: species number in landuse types // barplots####
+species_no_barplot_data <- IBL_barplot_dat (input_frame = o_plots, focal_var = "NO_ORTHO", group_var1 = "TYPE", error_bar = T)
+species_no_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+species_number_plot <- species_no_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = NO_ORTHO)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = NO_ORTHO - SE_NO_ORTHO, ymax = NO_ORTHO + SE_NO_ORTHO), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 15)) +
+labs (x = "", y = "Species number") +
+IBL_signi (c ("a", "b", "c")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+# COMPARISON: CFI in landuse types ####
+## ACHTUNG: wie mit empty values in wetland umgehen? NA -> wetlands werden "zu gut" bewertet. "0" -> wetlands werden "zu schlecht" bewertet. conservatively --> set to lowest sfi in study?
+## o_plots_SFI_conservative - NA auf 15.82 gesetzt; das ist der niedrigste SFI in der Studie. Ist als Konservativ anzusehen.
+o_plots_SFI_conservative <- o_plots
+o_plots_SFI_conservative$CFI_best <- o_plots_SFI_conservative$CFI_best %>% replace_na (15.82)
+CFI_barplot_data <- IBL_barplot_dat(input_frame = o_plots_SFI_conservative, focal_var = "CFI_best", group_var1 = "TYPE", error_bar = T)
+CFI_barplot_data $ group_TYPE <- c ("HAY", "PASTURE", "WET")
+CFI_plot <- CFI_barplot_data %>%
+ggplot (mapping = aes (x = group_TYPE, y = CFI_best)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = CFI_best - SE_CFI_best, ymax = CFI_best + SE_CFI_best), width = 0.3) +
+IBL_y_scale (sides = "l", air = F, limits = c (0, 32), major_y = 3) +
+labs (x = "", y = "Farmland index") +
+IBL_signi (c ("a", "b", "a")) +
+IBL_theme (text.size = 16, axis.text.size = 16)
+IBL_draw_plot(species_number_plot %>% IBL_title)
+# draw plots in 1 panel
+fig_1 <- IBL_draw_plot (
+list (species_number_plot %>% IBL_title ("a) Species richness"),
+CFI_plot %>% IBL_title ("b) Habitat demand")),
+plot_rows = 2, plot_distance_y = 5, plot_distance_x = 0
+)
+fig_1
+library(IBL)
+axis.title.x
+isNULL (axis.title.x)
+is.NULL (axis.title.x)
+NULL (axis.title.x)
+exists (axis.title.x)
+?exists
+exists ("axis.title.x")
+exists ("a")
+a <- c(1)
+exists ("a")
+library(IBL)
+library(IBL)
+library(IBL)

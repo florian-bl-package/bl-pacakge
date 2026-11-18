@@ -1,0 +1,276 @@
+# library ####
+library(bl)
+library(sf)
+library(Hmsc)
+library(DHARMa)
+library(MuMIn)
+library(parallel)
+
+# install.packages("pbapply")
+library(pbapply)
+
+# load data ####
+# folder
+raw_folder <- "U:/UOS - Arbeit/Projekte/DBU Projekt Südschwarzwald/R/raw_data/"
+objects_folder <- "U:/UOS - Arbeit/Projekte/DBU Projekt Südschwarzwald/R/objects/"
+results_folder <- "U:/UOS - Arbeit/Projekte/DBU Projekt Südschwarzwald/R/results/"
+
+# functions
+load(paste0(objects_folder, "functions.RData"))
+
+# dataset
+grasshopper_bf <- readRDS(paste0(objects_folder, "grasshopper_bf.RDS"))
+
+# variable names and order
+independent_vars <- readRDS(paste0(objects_folder, "grasshopper_independent_vars.RDS")) %>% select_v(-"Beweidungstyp")
+varname_replacer <- readRDS(paste0(objects_folder, "varname_replacer.RDS"))
+var_order <- readRDS(paste0(objects_folder, "var_order.RDS"))
+
+# multivariable models ####
+grasshopper_data_scaled <- grasshopper_bf
+grasshopper_data_scaled[independent_vars] <- scale(grasshopper_data_scaled[independent_vars])
+
+
+# set model subsetting type ("subset" or "full")
+model_subset = "subset"
+#model_subset = "full"
+
+# set na.action = fail for dredge
+options (na.action = na.fail)
+# dredge: all species ####
+# ------------------------- #+
+# global model
+# ------------------------- #+
+all_species_global_model <- lme4::glmer (data = grasshopper_data_scaled,
+                                         formula = reformulate(c(independent_vars, "(1|sub_area)"), "species_no"),
+                                         family = "poisson"
+)
+summary(all_species_global_model)
+vcov(all_species_global_model) %>% round(digits = 2)
+
+
+
+
+# ------------------------- #+
+# cluster starten (multicore)
+# ------------------------- #+
+# 1. Liste aller Modellaufrufe erzeugen (fittet nichts)
+all_calls <- MuMIn::dredge(all_species_global_model, m.lim=c(0,4),
+                           evaluate = FALSE,
+                           subset = !(Koppeln_Zwergstrauchheide && Koppeln_trockene.Borstgrasrasen),
+                           cluster = cl)
+length(all_calls)                              # so viele Modelle sind es
+
+# 2. Cluster + Affinität
+n_cores <- detectCores() - 2
+cl <- makeCluster(n_cores)
+clusterEvalQ(cl, { library(MuMIn); library(lme4); library(pbapply) })
+clusterExport(cl, c("grasshopper_data_scaled", "independent_vars"))
+
+# 3. Dynamisch verteilt fitten
+# all_fits <- pblapply(all_calls[1:100], function(x) {
+#   tryCatch(eval(x), error = function(e) NULL)
+# }, cl = cl, chunk.size = 2)
+all_fits <- parLapplyLB(cl, all_calls, function(x) {
+  tryCatch(eval(x), error = function(e) NULL)
+})
+stopCluster(cl)
+
+# 4. Fehlgeschlagene Fits entfernen und Tabelle bauen
+failed_idx <- which(sapply(all_fits, is.null))
+all_calls[failed_idx]           # die zugehörigen Modellaufrufe (Formeln)
+all_ok_fits <- Filter(Negate(is.null), all_fits)
+all_res  <- model.sel(all_ok_fits)
+
+# 5. baue "normales" dredge-objekt nach
+dredge_all_species <- all_res
+# Attribute entfernen, die nur model.sel(Liste) anhängt
+attr(dredge_all_species, "modelList")    <- NULL
+attr(dredge_all_species, "model.family") <- NULL
+# Wie bei normalem dredge: das EINE globale Modell anhängen
+attr(dredge_all_species, "global") <- all_species_global_model
+attr(dredge_all_species, "global.call") <- getCall(all_species_global_model)
+
+# rank als normalen AICc Wert setzen um massiv Platz zu sparen:
+attr(dredge_all_species, "rank") <- MuMIn::AICc
+
+# größe prüfen
+format(object.size(dredge_all_species), units = "MB")
+
+
+
+# save dredge object
+# saveRDS(dredge_all_species, paste0(objects_folder, "dredge_all_grasshopper_species.RData"))
+# load dredge object
+dredge_all_species <- readRDS(paste0(objects_folder, "dredge_all_grasshopper_species.RData"))
+dredge_all_species[1:10]
+
+# average model
+all_species_delta <- 0
+# avg_all_species_model <- model.avg (dredge_all_species, subset = delta < all_species_delta, fit=TRUE)
+# summary(avg_all_species_model)
+best_all_species_model <- get.models(dredge_all_species, subset = 1)[[1]]
+
+
+# teste auf singularity
+# (vereinfacht: wenn das model "singular" ist, gibt es keinen effekt der random effects -
+# dann ist kein conditional R² möglich/sinnvoll)
+bl_get_singular_models_in_dredge(dredge_all_species, all_species_delta)
+
+# checke variance inflation factor
+# (ein maß für Interkollinearität, das auch komplexere Zusammenhänge erkennt als Interkorrelationen zwischen nur zwei Variablen)
+# Werte nahe 1 sind top, bis ca. 3 kein Problem, ab 5 schwierig und ab 10 ein echtes Problem - dann sollte man es mit weniger Variablen probieren
+bl_check_variance_inflation_in_dredge(dredge_all_species, all_species_delta)
+
+# calculate R2 values for first and last model
+bl_get_best_and_least_R2(dredge_all_species, all_species_delta)
+
+# make clean overview table of average model
+all_species_avg_model <- bl_make_averageModel_table(type = model_subset, best_all_species_model)
+all_species_avg_model
+
+all_species_graph <- bl_multivar_coefficient_estimate_graph(best_all_species_model, export_for_sigmaplot = F,
+                                                            sub_type = model_subset,
+                                                            varname_replacement = varname_replacer,
+                                                            desired_variable_order = var_order,
+                                                            plot_title = "all_species")
+
+
+# dredge: threatened species ####
+# ------------------------- #+
+# global model
+# ------------------------- #+
+threatened_species_global_model <- lme4::glmer (data = grasshopper_data_scaled,
+                                                formula = reformulate(c(independent_vars, "(1|sub_area)"), "threatened_species"),
+                                                family = "poisson"
+)
+summary(threatened_species_global_model)
+vcov(threatened_species_global_model) %>% round(digits = 2)
+
+
+
+
+# ------------------------- #+
+# cluster starten (multicore)
+# ------------------------- #+
+# 1. Liste aller Modellaufrufe erzeugen (fittet nichts)
+th_calls <- MuMIn::dredge(threatened_species_global_model, m.lim=c(0,4),
+                          evaluate = FALSE,
+                          subset = !(Koppeln_Zwergstrauchheide && Koppeln_trockene.Borstgrasrasen),
+                          cluster = cl)
+length(th_calls)                              # so viele Modelle sind es
+
+# 2. Cluster + Affinität
+n_cores <- detectCores() - 2
+cl <- makeCluster(n_cores)
+clusterEvalQ(cl, { library(MuMIn); library(lme4); library(pbapply) })
+clusterExport(cl, c("grasshopper_data_scaled", "independent_vars"))
+
+# 3. Dynamisch verteilt fitten
+pboptions(type = "timer", use_lb = TRUE)   # Balken mit Restzeit-Schätzung
+# th_fits <- pblapply(th_calls, function(x) {
+#   tryCatch(eval(x), error = function(e) NULL)
+# }, cl = cl)
+th_fits <- parLapplyLB(cl, th_calls, function(x) {
+  tryCatch(eval(x), error = function(e) NULL)
+})
+stopCluster(cl)
+
+# 4. Fehlgeschlagene Fits entfernen und Tabelle bauen
+failed_idx_th <- which(sapply(th_calls, is.null))
+th_calls[failed_idx_th]           # die zugehörigen Modellaufrufe (Formeln)
+th_fits <- Filter(Negate(is.null), th_fits)
+dredge_threatened_species  <- model.sel(th_fits)
+
+
+# 5. baue "normales" dredge-objekt nach
+# Attribute entfernen, die nur model.sel(Liste) anhängt
+attr(dredge_threatened_species, "modelList")    <- NULL
+attr(dredge_threatened_species, "model.family") <- NULL
+# Wie bei normalem dredge: das EINE globale Modell anhängen
+attr(dredge_threatened_species, "global") <- threatened_species_global_model
+attr(dredge_threatened_species, "global.call") <- getCall(threatened_species_global_model)
+
+# rank als normalen AICc Wert setzen um massiv Platz zu sparen:
+attr(dredge_threatened_species, "rank") <- MuMIn::AICc
+
+
+
+# save dredge object
+# saveRDS(dredge_threatened_species, paste0(objects_folder, "dredge_all_grasshopper_species.RData"))
+# load dredge object
+dredge_threatened_species <- readRDS(paste0(objects_folder, "dredge_all_grasshopper_species.RData"))
+dredge_threatened_species[1:10]
+
+# average model
+threatened_species_delta <- 0.1
+# avg_threatened_species_model <- model.avg (dredge_threatened_species, subset = delta < threatened_species_delta, fit=TRUE)
+# summary(avg_threatened_species_model)
+best_threatened_species_model <- get.models(dredge_threatened_species, subset = 1)[[1]]
+
+
+# teste auf singularity
+# (vereinfacht: wenn das model "singular" ist, gibt es keinen effekt der random effects -
+# dann ist kein conditional R² möglich/sinnvoll)
+bl_get_singular_models_in_dredge(dredge_threatened_species, threatened_species_delta)
+
+# checke variance inflation factor
+# (ein maß für Interkollinearität, das auch komplexere Zusammenhänge erkennt als Interkorrelationen zwischen nur zwei Variablen)
+# Werte nahe 1 sind top, bis ca. 3 kein Problem, ab 5 schwierig und ab 10 ein echtes Problem - dann sollte man es mit weniger Variablen probieren
+bl_check_variance_inflation_in_dredge(dredge_threatened_species, threatened_species_delta)
+
+# calculate R2 values for first and last model
+bl_get_best_and_least_R2(dredge_threatened_species, threatened_species_delta)
+
+# make clean overview table of average model
+threatened_species_best_model <- bl_make_averageModel_table(type = model_subset,best_threatened_species_model)
+threatened_species_best_model
+
+threatened_species_graph <- bl_multivar_coefficient_estimate_graph(best_threatened_species_model, export_for_sigmaplot = F,
+                                                                   sub_type = model_subset,
+                                                                   varname_replacement = varname_replacer,
+                                                                   desired_variable_order = var_order,
+                                                                   plot_title = "threatened_species")
+
+
+
+
+
+## old, less efficient multicore ####
+# n_cores <- detectCores() - 2
+# cl <- makeCluster(n_cores)
+# 
+# clusterEvalQ(cl, {
+#   library(MuMIn)
+#   library(lme4)
+# })         # ggf. weitere Pakete, z. B. lme4, glmmTMB
+# 
+# # starte cluster (multicore)
+# clusterExport(cl, c("grasshopper_data_scaled", "independent_vars"))
+# 
+# # dredge
+# dredge_all_species <- MuMIn::dredge(all_species_global_model, m.lim=c(0,4),
+# subset = !(Koppeln_Zwergstrauchheide && Koppeln_trockene.Borstgrasrasen),
+# cluster = cl)
+# 
+# # stoppe cluster (multicore)
+# stopCluster(cl)
+
+
+
+
+# n_cores <- detectCores() - 2
+# cl <- makeCluster(n_cores)
+# 
+# clusterEvalQ(cl, {
+#   library(MuMIn)
+#   library(lme4)
+# })         # ggf. weitere Pakete, z. B. lme4, glmmTMB
+# # starte cluster (multicore)
+# clusterExport(cl, c("grasshopper_data_scaled", "independent_vars"))
+# # dredge
+# dredge_threatened_species <- MuMIn::dredge(threatened_species_global_model, m.lim=c(0,3),
+#                                     subset = !(Koppeln_Zwergstrauchheide && Koppeln_trockene.Borstgrasrasen),
+#                                     cluster = cl)
+# # stoppe cluster (multicore)
+# stopCluster(cl)

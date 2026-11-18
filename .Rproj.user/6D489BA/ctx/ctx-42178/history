@@ -1,0 +1,512 @@
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, y_head = 1)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, y_head = 2)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, y_head = 20)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 20)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 2)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 0)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 2)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 10)
+stat_summary
+fun.ymax
+?fun.ymax
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, ylim = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 10)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 10)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy, distance = 1)
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy)
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy)
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+B_plot <-
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+IBL_draw_plot(B_plot)
+IBL_draw_plot(C_plot)
+?xlab
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+xlab ("this is xlab") +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab", margin = 2) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+?theme
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+theme (axis.title.y (margin = 2))
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme(axis.title.y = element_text(margin = margin(l = 20))) +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+?margin
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme(axis.title.y = element_text(margin = 20)) +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+#IBL_theme(axis.title.y = element_text(margin = 20)) +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y (margin = 2))
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme(axis.title.y = element_text(margin = 20)) +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y (margin = 2))
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme(axis.title.y = element_text(margin = 20)) +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+IBL_y_scale(bottom = T) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+theme (axis.title.y (margin = 2)) +
+IBL_y_scale(bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+C_plot
+IBL_draw_plot(list (B_plot, C_plot))
+?cowplot::plot_grid
+IBL_draw_plot(list (B_plot, C_plot), align_plots = T)
+D <- B
+D [1:2] <- C [1:2] *1000
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,3500)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,35000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+D
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+D <- B
+D [1:2] <- C [1:2] *100
+D
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,3500)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,35000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+D_plot
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T)
+sqrt (3)
+sqrt (2)
+sqrt (5)
+sqrt (9)
+sqrt (10)
+sqrt (8)
+sqrt (50)
+sqrt (100)
+sqrt (101)
+sqrt (400)
+sqrt (399)
+19*20
+library(IBL)
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T)
+warnings)
+warnings()
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T, plot_cols = 2, plot_rows = 2)
+library(IBL)
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T)
+IBL_draw_plot(list (B_plot, C_plot), align_plots = T)
+library(IBL)
+IBL_draw_plot(list (B_plot, C_plot))
+warnings()
+warnings()
+IBL_draw_plot(list (B_plot, C_plot))
+library(IBL)
+B_plot <-
+ggplot (data = B, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+IBL_y_scale(bottom = T, limits = c (0, 35)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = B$hwy + B$SE_hwy)
+C_plot <-
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,35000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+IBL_draw_plot(list (B_plot, C_plot))
+D_plot
+D_plot <-
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,40000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy)
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T, plot_cols = 2, plot_rows = 2)
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,40000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy) +
+theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)))
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,40000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy) +
+theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)))
+=?margin
+?margin
+ggplot (data = D, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,40000)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = D$hwy + D$SE_hwy) +
+theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+ggplot (data = C, aes (x = cyl, y = hwy)) +
+geom_col (position = "dodge2", fill = IBL_blue(2), color = "black", width = 0.7) +
+geom_errorbar(aes (ymin = hwy - SE_hwy, ymax = hwy + SE_hwy), width = 0.5) +
+ylab ("this is ylab") +
+#theme (axis.title.y = element_text (margin = 2)) +
+IBL_y_scale (bottom = T, limits = c (0,350)) +
+IBL_theme() +
+IBL_signi_codes(c ("a", "ab", "b", "b"), y = C$hwy + C$SE_hwy)+
+theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+IBL_draw_plot(list (B_plot, C_plot, D_plot), align_plots = T, plot_cols = 2, plot_rows = 2)
+B
+ggplot(mpg, aes(cty, hwy)) + geom_point()
+ggplot(mpg, aes(cty, hwy)) + geom_point()
+ggplot(mpg, aes(cty, hwy*100)) + geom_point()
+plot_a <- ggplot(mpg, aes(cty, hwy)) + geom_point()
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point()
+cowplot::plot_grid (plotlist = list (plot_a, plot_b),
+align = v,
+nrow = 2,
+ncol = 1,
+greedy = T)
+?cowplot::plot_grid
+cowplot::plot_grid (plotlist = list (plot_a, plot_b),
+align = "v",
+nrow = 2,
+ncol = 1,
+greedy = T)
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + opts(axis.title.y = theme_text(vjust=-0.5))
+?opts
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = theme_text(vjust=-0.5))
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = element_text(vjust=-0.5))
+plot_b
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = element_text(vjust=-1))
+plot_b
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = element_text(vjust=10))
+plot_b
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = element_text(vjust=8))
+plot_b
+plot_b <- ggplot(mpg, aes(cty, hwy*100)) + geom_point() + theme (axis.title.y = element_text(vjust=4))
+plot_b
+plot_a <- ggplot(mpg, aes(cty, hwy)) + geom_point() + theme (axis.title.y = element_text(vjust=4))
+plot_a
+?ggplotGrob
+plots <- list(plot_a, plot_b)
+grobs <- list()
+widths <- list()
+plots
+for (i in 1:length(plots)){
+grobs[[i]] <- ggplotGrob(plots[[i]])
+widths[[i]] <- grobs[[i]]$widths[2:5]
+}
+grobs
+widths
+maxwidth <- do.call(grid::unit.pmax, widths)
+maxwidth
+for (i in 1:length(grobs)){
+grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+}
+grobs
+do.call("grid.arrange", c(grobs, ncol = 1))
+?grid.arrange
+??grid.arrange
+library(gridExtra)
+do.call("grid.arrange", c(grobs, ncol = 1))
+?grid::unit.pmax
+max(unit(1:3, "cm"), unit(0.5, "npc"))
+unit(1:3, "cm")
+unit.pmax(unit(1:3, "cm"), unit(0.5, "npc"))
+grid::unit.pmax(unit(1:3, "cm"), unit(0.5, "npc"))
+install.packages('patchwork')
+library(patchwork)
+A
+plot_a
+plot_a + plot_a
+test <- plot_a + plot_a
+IBL_draw_plot(test)
+test <- plot_a + plot_b
+test
+test <- plot_a / plot_b
+test <- plot_a | plot_b
+test
+plot_a|plot_b
+IBL_draw_plot(list (plot_a, plot_b))
+IBL_draw_plot(list (plot_a, plot_b), align_plots = T)
+IBL_draw_plot(list (plot_a, plot_b), align_plots = T, plot_distance_x = 10)
+IBL_draw_plot(list (plot_a, plot_b), align_plots = T, plot_distance_x = 10, plot_distance_y = 10)
+IBL_draw_plot(list (plot_a, plot_b), align_plots = T, plot_distance_x = 10, plot_distance_y = 10) + plot_a
+library(IBL)
+library(IBL)
+?expand
+?scale_y_continuous
+?expand_scaleä
+?expand_scale
+library(IBL)
+?mean
+c (1,2,NA)
+mean (c (1,2,NA))
+mean (c (1,2,NA), na.rm =T)
+is.na (c (1,2,NA))
+if (is.na (c (1,2,NA)) {
+return ("bla")
+}
+if (is.na (c (1,2,NA))) {
+return ("bla")
+}
+for (i in 1: length (c (1,2,NA))) {
+if (is.na (c (1,2,NA) [i])) {
+return ("bla")
+}
+}
+for (i in 1: length (c (1,2,NA))) {
+if (is.na (c (1,2,NA) [[i]])) {
+return ("bla")
+}
+}
+length (c (1,2,NA)
+)
+c (1,2,NA) [3]
+is.na(c (1,2,NA) [3])
+for (i in 1: length (c (1,2,NA))) {
+if (is.na (c (1,2,NA) [[i]])) {
+a <- "bla"
+}
+return (a)
+}
+for (i in 1: length (c (1,2,NA))) {
+if (is.na (c (1,2,NA) [[i]])) {
+a <- "bla"
+return (a)
+}
+return (a)
+}
+anyNA (c (1,2,NA))
+anyNA (c (1,2,N3))
+anyNA (c (1,2,3))
+library(IBL)
+library(IBL)
+sd (c (1,2,NA))
+sd (c (1,2,NA), na.rm = T)
+library(IBL)
+!is.na(c (1,2,NA))
+length(!is.na(c (1,2,NA)))
+length(c (1,2,NA) [!is.na(c (1,2,NA))])
