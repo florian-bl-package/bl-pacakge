@@ -16,7 +16,7 @@ bl_dredge_multicore(
 \arguments{
 \item{global_model}{A global model (glm, glmm, lm, lmm, or any model type that MuMIn::dredge can handle)}
 
-\item{packages}{packages that were used for fitting the global model. "lme4" is the standard here, but e.g. "lmerTest", "glmmTMB", "nlme", "MASS" are other candidates.}
+\item{packages}{packages that were used for fitting the global model. "lme4" is the standard here, but e.g. "lmerTest", "glmmTMB", "nlme", "MASS" (even combinations) are other candidates.}
 
 \item{dredge_m.lim}{Vector of length == 2 specifying the min and max number of variables in each model. (see ?MuMIn::dredge --> m.lim). "Auto" sets to 1/10 of all cases of the global model.}
 
